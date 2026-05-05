@@ -1,0 +1,46 @@
+name: "Sitequest Deploy"
+description: "Deploy a static site to a Sitequest webspace via the REST API. Zero infrastructure, just an API key."
+author: "Sitequest"
+branding:
+  icon: "upload-cloud"
+  color: "black"
+
+inputs:
+  api-key:
+    description: "Sitequest API key with the `webspace:manage` scope. Store as a repository secret."
+    required: true
+  webspace-id:
+    description: "Target webspace ID (visible in the dashboard URL)."
+    required: true
+  source:
+    description: "Local directory to deploy (the build output)."
+    required: false
+    default: "dist"
+  target:
+    description: "Remote directory under the webspace home (e.g. `public_html`, `htdocs`)."
+    required: false
+    default: "public_html"
+  strip-components:
+    description: "Strip N leading path components when extracting (passed to `tar --strip-components`)."
+    required: false
+    default: "0"
+  keep-old:
+    description: "If `true`, keep the previous release in `<target>.old/` instead of removing it."
+    required: false
+    default: "false"
+  api-base:
+    description: "Override the API base URL (for staging or self-hosted)."
+    required: false
+    default: "https://hosting.site.quest"
+
+outputs:
+  bytes-uploaded:
+    description: "Size of the uploaded tar.gz archive in bytes."
+  files-deployed:
+    description: "Number of files extracted on the target."
+  duration-ms:
+    description: "End-to-end deploy duration in milliseconds."
+
+runs:
+  using: "node24"
+  main: "dist/index.js"
